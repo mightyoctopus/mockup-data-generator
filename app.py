@@ -9,7 +9,6 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 os.environ["HF_HUB_VERBOSITY"] = "info"
 
-import requests
 from typing import List, Dict, Tuple
 from datetime import datetime
 from huggingface_hub import login, snapshot_download
@@ -21,7 +20,7 @@ from transformers import (
 import torch, threading
 from anthropic import Anthropic
 import time, gradio as gr
-from tqdm import tqdm
+
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
@@ -99,8 +98,6 @@ def enable_model() -> None:
             quantization_config=bnb,
         ).eval()
 
-        # model.generate()
-
 
 def invoke_messages(
         rows_num: int,
@@ -168,7 +165,6 @@ def generate_output(messages):
         return_attention_mask=True
     ).to(model.device)
 
-    # print(inputs)
 
     outputs = model.generate(
         **inputs,
@@ -182,7 +178,6 @@ def generate_output(messages):
     ### Slice the generated sequence to skip the prompt length
     gen_tokens = outputs[0][prompt_len:]
 
-    # print(tokenizer.decode(gen_tokens, skip_special_tokens=True))
 
     return gen_tokens
 
